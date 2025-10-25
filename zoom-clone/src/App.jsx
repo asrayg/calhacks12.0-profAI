@@ -41,11 +41,11 @@ export default function App() {
       <div
         style={{
           position: "absolute",
-          top: "200px",
-          left: "1246px",
+          top: "400px",
+          left: "1260px",
           transform: "translate(-50%, -50%)",
-          width: "370px",
-          height: "400px",
+          width: "30%",
+          height: "100%",
           zIndex: 20,
         }}
       >
