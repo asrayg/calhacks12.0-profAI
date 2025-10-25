@@ -1,5 +1,5 @@
 {
-  "name": "profai-panel",
+  "name": "zoom-clone",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,6 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.2.1",
     "@eslint/js": "^9.36.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
