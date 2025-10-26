@@ -1,11 +1,74 @@
 import meetingScreenshot from "./assets/zoom.png";
 import ProfAISidePanel from "./ProfAISidePanel";
 import duckImage from "./assets/ducks.png";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import coolVideo from "./assets/Untitled design (1).mp4";
 
 export default function App() {
   const [showDuckChat, setShowDuckChat] = useState(false);
+  const videoRef = useRef(null);
+  const speechRef = useRef(null);
+  const speechTimeoutRef = useRef(null);
+
+  // Text from rubberDuck.py
+  const duckText = `A rule tree proof, also known as a derivation tree, is a visual format for proving that a statement is true using a system of formal rules. You start by writing your goal statement at the very bottom of the tree (the root). You then work upward by finding an inference rule whose conclusion matches your goal. You write the premises of that rule above your goal, creating new branches. You repeat this process for each new premise, treating it as a new sub-goal. The proof is complete when every branch of the tree ends in an axiom, which is a special rule with no premises, serving as the "leaves" of the tree. This structure provides a clear, step-by-step logical argument showing how the final goal was derived from the system's foundational truths.`;
+
+  const handleDuckClick = () => {
+    const newDuckState = !showDuckChat;
+    setShowDuckChat(newDuckState);
+
+    if (newDuckState) {
+      // Duck mode activated - pause video immediately
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+
+      // Stop any ongoing speech
+      if (speechRef.current) {
+        window.speechSynthesis.cancel();
+      }
+
+      // Clear any pending speech timeout
+      if (speechTimeoutRef.current) {
+        clearTimeout(speechTimeoutRef.current);
+      }
+
+      // Wait 4 seconds before starting speech
+      speechTimeoutRef.current = setTimeout(() => {
+        // Use Web Speech API to read the text
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(duckText);
+          utterance.rate = 0.9; // Slightly slower for clarity
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
+          
+          utterance.onend = () => {
+            console.log('🦆 Duck finished speaking!');
+          };
+
+          speechRef.current = utterance;
+          window.speechSynthesis.speak(utterance);
+        } else {
+          console.error('Speech synthesis not supported in this browser');
+        }
+      }, 4000); // 4 second delay
+    } else {
+      // Duck mode deactivated - resume video and stop speech
+      if (videoRef.current) {
+        videoRef.current.play();
+      }
+
+      // Clear the timeout if speech hasn't started yet
+      if (speechTimeoutRef.current) {
+        clearTimeout(speechTimeoutRef.current);
+      }
+
+      // Stop the speech
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+  };
 
   return (
     <div
@@ -30,6 +93,7 @@ export default function App() {
 
       {/* Main video */}
       <video
+        ref={videoRef}
         src={coolVideo}
         autoPlay
         loop
@@ -81,7 +145,7 @@ export default function App() {
         <img
           src={duckImage}
           alt="Duck"
-          onClick={() => setShowDuckChat(!showDuckChat)}
+          onClick={handleDuckClick}
           style={{
             width: "120px",
             height: "120px",
