@@ -4,13 +4,15 @@ import os
 from  flask import Flask, jsonify
 import easyocr
 from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv(".env.video")
 
-
-client = openai.Client("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")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
-video_path = "./media/test.py"
+video_path = "./media/test.mp4"
 directory = "extracted_frames"
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def extract_frames(video_path, interval_sec=1):
     cap = cv2.VideoCapture(video_path)
@@ -41,7 +43,7 @@ def extract_frames(video_path, interval_sec=1):
 
 def run_ocr_on_frames(directory):
     reader = easyocr.Reader(['en', 'es'])
-
+    all_text = []
     for filename in sorted(os.listdir(directory)):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
 
@@ -52,24 +54,23 @@ def run_ocr_on_frames(directory):
             
             results = reader.readtext(frame_rgb)
             text = " ".join([entry[1] for entry in results])
-
+            all_text.append(text + " ")
             print(f"OCR for {filename}: {text}")
-            
-            return text
+    return "".join(all_text)
 
 def llm_output(text):
     response = client.chat.completions.create(
         model ="gpt-4o-mini",
-        messages={
+        messages=[
             {"role": "user", "content": f"The user has pr {text}"},
             {"role": "system", "content": "You are a helpful assistant that summarizes text and explains it"}
-        }
+        ]
     )
     text = response.choices[0].message['content']
     return text
 
 
-@app.route('/', method=["GET"])
+@app.route('/', methods=["GET"])
 def start():
     extract_frames(video_path, interval_sec=1)
     text = run_ocr_on_frames(directory)
