@@ -2,7 +2,7 @@ import meetingScreenshot from "./assets/zoom.png";
 import ProfAISidePanel from "./ProfAISidePanel";
 import duckImage from "./assets/ducks.png";
 import React, { useState } from "react";
-import coolVideo from "./assets/coolaf.mp4";
+import coolVideo from "./assets/Untitled design (1).mp4";
 
 export default function App() {
   const [showDuckChat, setShowDuckChat] = useState(false);
