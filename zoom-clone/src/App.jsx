@@ -152,8 +152,8 @@ const styles = {
   duckContainer: {
     position: "fixed",
     zIndex: 9999,
-    bottom: "120px",
-    left: "900px",
+    bottom: "10px",
+    left: "1010px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

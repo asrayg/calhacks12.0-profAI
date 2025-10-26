@@ -1,0 +1,37 @@
+##ProfAI
+
+### Inspiration
+
+We've all been in university classes that have been taught by professors with thicker accents that can be hard to comprehend. Also, it gets hard to understand the content they're teaching, even though they're brilliant people from all around the world. So we built ProfAI to bridge the gap between the world's best educators and university students.
+
+### What it does
+
+This application provides real-time accent translation for the classroom. It captures a professor's audio and instantly streams it to students in a clear American accent, ensuring they can follow the lecture live without comprehension difficulties.
+
+Our platform also enhances studying with powerful integrated tools. It automatically transcribes the professor's speech into detailed notes in real-time. Furthermore, it features a "rubber ducky mode," a smart voice agent that has context from your course materials on Canvas, YouTube, and Google Drive. You can talk to this agent while studying to get answers, explanations, or even have it perform web searches for you.
+
+### How we built it
+
+We built this project as a real-time audio-processing pipeline. Here’s a breakdown of the technology stack:
+
+Our application is built with a Python Flask backend and a React frontend. The core real-time audio pipeline uses LiveKit to manage the STT (Speech-to-Text) and TTS (Text-to-Speech) workflow, enabling instant accent translation. The live transcription feature is powered by printing the direct output from the STT module. For the "rubber ducky" assistant, we built a conversational AI bot, also using LiveKit, and expanded its knowledge base using Llama to pull context from course materials for accurate, on-demand answers.
+
+### Challenges we ran into
+
+Our primary challenge was latency. Building a direct STT-to-TTS pipeline fast enough for a live lecture was difficult, creating race condition issues that required significant optimization. This was compounded by network variability (WiFi issues) that we could not completely solve.
+
+We also faced an architectural hurdle in adapting our system from a default conversational chatbot model to an efficient, live transcription service. Finally, we had to find a TTS engine that balanced speed with voice naturalness to ensure the output sounded human and was suitable for long lectures.
+
+### Accomplishments that we're proud of
+
+We are incredibly proud that we built a *functional, end-to-end, real-time* pipeline. Hearing a voice go in with one accent and come out in another, almost instantly, was a huge "wow" moment for our team. We successfully built a tool that directly solves a problem we and our friends personally experience in our education.
+
+### What we learned
+
+This project was a deep dive into the world of real-time audio processing and AI. We learned how difficult it is to manage audio streams, buffering, and network latency. We also gained valuable experience integrating multiple complex AI services, learning the trade-offs between speed, quality, and cost for each. More than anything, we learned how to quickly prototype an idea and turn it into a working product that could have a real-world impact.
+
+### What's next for `Prof AI`
+
+Our immediate goal is to make the application production-ready and bring it to market.
+
+Following the launch, we plan to integrate our technology with popular video conferencing platforms and develop a physical microphone that can perform the same live translation in an in-person classroom. We will also expand beyond the education sector, adapting the tool for new use cases like live sales calls, corporate interviews, and virtual networking events.
