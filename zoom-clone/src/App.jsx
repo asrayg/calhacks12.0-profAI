@@ -10,75 +10,48 @@ export default function App() {
   const speechRef = useRef(null);
   const speechTimeoutRef = useRef(null);
 
-  // Text from rubberDuck.py
-  const duckText = `A rule tree proof, also known as a derivation tree, is a visual format for proving that a statement is true using a system of formal rules. You start by writing your goal statement at the very bottom of the tree (the root). You then work upward by finding an inference rule whose conclusion matches your goal. You write the premises of that rule above your goal, creating new branches. You repeat this process for each new premise, treating it as a new sub-goal. The proof is complete when every branch of the tree ends in an axiom, which is a special rule with no premises, serving as the "leaves" of the tree. This structure provides a clear, step-by-step logical argument showing how the final goal was derived from the system's foundational truths.`;
+  const duckText = `A rule tree proof, also known as a derivation tree, is a visual format for proving that a statement is true`;
 
   const handleDuckClick = () => {
     const newDuckState = !showDuckChat;
     setShowDuckChat(newDuckState);
 
     if (newDuckState) {
-      // Duck mode activated - pause video immediately
+      // 🔇 Pause and mute video
       if (videoRef.current) {
         videoRef.current.pause();
+        videoRef.current.muted = true;
       }
 
-      // Stop any ongoing speech
-      if (speechRef.current) {
-        window.speechSynthesis.cancel();
-      }
+      if (speechRef.current) window.speechSynthesis.cancel();
+      if (speechTimeoutRef.current) clearTimeout(speechTimeoutRef.current);
 
-      // Clear any pending speech timeout
-      if (speechTimeoutRef.current) {
-        clearTimeout(speechTimeoutRef.current);
-      }
-
-      // Wait 4 seconds before starting speech
+      // Start duck speaking after 4 sec
       speechTimeoutRef.current = setTimeout(() => {
-        // Use Web Speech API to read the text
-        if ('speechSynthesis' in window) {
+        if ("speechSynthesis" in window) {
           const utterance = new SpeechSynthesisUtterance(duckText);
-          utterance.rate = 0.9; // Slightly slower for clarity
+          utterance.rate = 0.9;
           utterance.pitch = 1.0;
           utterance.volume = 1.0;
-          
-          utterance.onend = () => {
-            console.log('🦆 Duck finished speaking!');
-          };
-
+          utterance.onend = () => console.log("🦆 Duck finished speaking!");
           speechRef.current = utterance;
           window.speechSynthesis.speak(utterance);
-        } else {
-          console.error('Speech synthesis not supported in this browser');
         }
-      }, 4000); // 4 second delay
+      }, 4000);
     } else {
-      // Duck mode deactivated - resume video and stop speech
+      // 🔊 Resume and unmute video
       if (videoRef.current) {
         videoRef.current.play();
+        videoRef.current.muted = false;
       }
 
-      // Clear the timeout if speech hasn't started yet
-      if (speechTimeoutRef.current) {
-        clearTimeout(speechTimeoutRef.current);
-      }
-
-      // Stop the speech
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
+      if (speechTimeoutRef.current) clearTimeout(speechTimeoutRef.current);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
     }
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
       {/* Zoom-like Background */}
       <img
         src={meetingScreenshot}
@@ -90,6 +63,23 @@ export default function App() {
           display: "block",
         }}
       />
+
+      {/* 🌫️ Blur overlay when Duck is active */}
+      {showDuckChat && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            zIndex: 15,
+            transition: "backdrop-filter 0.3s ease, background 0.3s ease",
+          }}
+        />
+      )}
 
       {/* Main video */}
       <video
@@ -129,7 +119,6 @@ export default function App() {
 
       {/* 🦆 Duck Assistant */}
       <div style={styles.duckContainer}>
-        {/* Speech bubble (to the left) */}
         {showDuckChat && (
           <div style={styles.duckBubble}>
             <div style={styles.waveContainer}>
@@ -141,7 +130,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Duck icon (static) */}
         <img
           src={duckImage}
           alt="Duck"
@@ -152,12 +140,14 @@ export default function App() {
             cursor: "pointer",
             borderRadius: "50%",
             padding: "8px",
+            zIndex: 9999,
           }}
         />
       </div>
     </div>
   );
 }
+
 const styles = {
   duckContainer: {
     position: "fixed",
@@ -165,8 +155,8 @@ const styles = {
     bottom: "120px",
     left: "900px",
     display: "flex",
-    flexDirection: "column", // 🧠 Stack vertically
-    alignItems: "center", // centers bubble horizontally
+    flexDirection: "column",
+    alignItems: "center",
     gap: "10px",
   },
 
@@ -207,18 +197,5 @@ const styles = {
     fontWeight: 600,
     fontSize: "13px",
     color: "#444",
-  },
-
-  "::after": {
-    content: '""',
-    position: "absolute",
-    bottom: "-6px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: "0",
-    height: "0",
-    borderLeft: "6px solid transparent",
-    borderRight: "6px solid transparent",
-    borderTop: "6px solid #fff6cc",
   },
 };
