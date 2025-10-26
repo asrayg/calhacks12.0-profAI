@@ -2,6 +2,7 @@ import meetingScreenshot from "./assets/zoom.png";
 import ProfAISidePanel from "./ProfAISidePanel";
 import duckImage from "./assets/ducks.png";
 import React, { useState } from "react";
+import coolVideo from "./assets/coolaf.mp4";
 
 export default function App() {
   const [showDuckChat, setShowDuckChat] = useState(false);
@@ -29,10 +30,12 @@ export default function App() {
 
       {/* Main video */}
       <video
-        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        src={coolVideo}
         autoPlay
         loop
-        muted
+        muted={false}
+        playsInline
+        controls
         style={{
           position: "absolute",
           top: "65px",
@@ -115,7 +118,7 @@ const styles = {
     gap: "10px",
     position: "absolute",
     right: "110px",
-    bottom: "90px", 
+    bottom: "90px",
     animation: "popIn 0.25s ease-out",
   },
 
@@ -142,17 +145,16 @@ const styles = {
     color: "#444",
   },
 
-  '::after': {
-  content: '""',
-  position: "absolute",
-  bottom: "-6px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  width: "0",
-  height: "0",
-  borderLeft: "6px solid transparent",
-  borderRight: "6px solid transparent",
-  borderTop: "6px solid #fff6cc",
-},
-
+  "::after": {
+    content: '""',
+    position: "absolute",
+    bottom: "-6px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "0",
+    height: "0",
+    borderLeft: "6px solid transparent",
+    borderRight: "6px solid transparent",
+    borderTop: "6px solid #fff6cc",
+  },
 };
